@@ -31,93 +31,102 @@ export default function ConfigPage() {
 
   return (
     <ProtectedRoute>
-      <div className="relative flex h-auto min-h-screen w-full flex-col bg-background-light dark:bg-background-dark overflow-x-hidden font-display text-gray-900 dark:text-white">
+      <div className="relative min-h-screen w-full bg-[#F8F9FF] font-display text-gray-900">
         <Header />
 
-        <div className="px-4 md:px-40 flex flex-1 justify-center py-5">
-          <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
-            {/* Breadcrumb */}
-            <div className="flex flex-wrap gap-2 px-4 py-2 mb-2">
-              <a
-                className="text-gray-600 dark:text-gray-400 text-base font-medium leading-normal hover:text-primary transition-colors cursor-pointer"
-                onClick={() => router.push('/home')}
-              >
-                Home
-              </a>
-              <span className="text-gray-600 dark:text-gray-400 text-base font-medium leading-normal">/</span>
-              <span className="text-gray-900 dark:text-white text-base font-medium leading-normal">Quiz Config</span>
-            </div>
+        <main className="max-w-7xl mx-auto px-6 py-12">
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-2 text-sm text-gray-500 mb-6 font-medium">
+            <a onClick={() => router.push('/home')} className="hover:text-primary transition-colors cursor-pointer">
+              Home
+            </a>
+            <span className="material-symbols-outlined text-xs">chevron_right</span>
+            <span className="font-medium text-primary">Quiz Config</span>
+          </div>
 
-            {/* Header */}
-            <div className="flex flex-wrap justify-between gap-3 px-4 mb-6">
-              <div className="flex min-w-72 flex-col gap-2">
-                <h1 className="text-gray-900 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">
-                  Configure Your Quiz
-                </h1>
-                <p className="text-gray-600 dark:text-gray-400 text-base font-normal leading-normal">
-                  Customize your session settings below to start playing.
-                </p>
-              </div>
-            </div>
+          <header className="mb-12">
+            <h1 className="text-4xl font-extrabold text-gray-900 mb-2 tracking-tight">
+              Configure Your Quiz
+            </h1>
+            <p className="text-gray-500 text-lg">
+              Customize your session settings below to start playing.
+            </p>
+          </header>
 
-            {/* Category Selection */}
-            <CategorySelector
-              categories={CATEGORIES}
-              selectedCategory={selectedCategory}
-              onSelect={setSelectedCategory}
-            />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <section className="lg:col-span-3">
+              <CategorySelector
+                categories={CATEGORIES}
+                selectedCategory={selectedCategory}
+                onSelect={setSelectedCategory}
+              />
+            </section>
 
-            {/* Difficulty and Question Count */}
-            <div className="flex flex-col md:flex-row gap-8 mb-8 px-4">
+            <section className="lg:col-span-1">
               <DifficultySelector selectedDifficulty={selectedDifficulty} onSelect={setSelectedDifficulty} />
+            </section>
 
-              <div className="flex-1">
-                <h3 className="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] pb-4">
-                  3. Number of Questions
-                </h3>
-                <div className="rounded-xl border border-gray-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark p-6 h-auto md:h-[110px] flex items-center justify-between gap-4">
-                  <div className="flex flex-col">
-                    <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">Total Questions</span>
-                    <span className="text-3xl font-black text-gray-900 dark:text-white">{QUESTION_COUNT}</span>
-                  </div>
-                  <div className="text-gray-600 dark:text-gray-400">
-                    <span className="material-symbols-outlined" style={{ fontSize: '48px' }}>
-                      quiz
-                    </span>
+            <section className="lg:col-span-2">
+              <div className="flex items-center gap-3 mb-6">
+                <span className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">3</span>
+                <h2 className="text-xl font-bold text-gray-800">Number of Questions</h2>
+              </div>
+
+              <div className="bg-white p-8 rounded-3xl border border-gray-100 flex items-center justify-between min-h-[218px]">
+                <div>
+                  <p className="text-gray-500 font-medium mb-2 uppercase tracking-wider text-xs">
+                    Total Questions
+                  </p>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-7xl font-black text-gray-900">{QUESTION_COUNT}</span>
+                    <span className="text-gray-400 font-medium">Questions</span>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Error Message */}
-            {error && (
-              <div className="mx-4 mb-4 bg-red-500/10 border border-red-500/50 rounded-xl p-4 text-red-400 text-sm">
-                {error}
+                <div className="hidden md:flex flex-col items-center justify-center p-6 border-l border-gray-100 ml-8">
+                  <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center text-blue-500 mb-2">
+                    <span className="material-symbols-outlined text-3xl">quiz</span>
+                  </div>
+                  <p className="text-sm font-medium text-gray-500 text-center">
+                    Standard<br />Session
+                  </p>
+                </div>
               </div>
-            )}
-
-            {/* Start Button */}
-            <div className="px-4 py-8 flex justify-center md:justify-end">
-              <button
-                onClick={handleStartQuiz}
-                disabled={isLoading || !selectedCategory}
-                className="flex min-w-[200px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 bg-primary hover:bg-blue-600 transition-colors text-white gap-3 text-lg font-bold leading-normal tracking-[0.015em] px-8 shadow-xl shadow-blue-500/20 dark:shadow-blue-500/40 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isLoading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    <span>Loading...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Start Quiz</span>
-                    <span className="material-symbols-outlined">play_arrow</span>
-                  </>
-                )}
-              </button>
-            </div>
+            </section>
           </div>
-        </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="mt-8 bg-red-500/10 border border-red-500/50 rounded-xl p-4 text-red-600 text-sm flex items-center gap-2">
+              <span className="material-symbols-outlined">error</span>
+              <span className="font-bold">Error:</span> {error}
+            </div>
+          )}
+
+          {/* Start Button */}
+          <div className="mt-16 flex justify-center">
+            <button
+              onClick={handleStartQuiz}
+              disabled={isLoading || !selectedCategory}
+              className="group relative px-12 py-5 bg-primary text-white text-xl font-bold rounded-full shadow-2xl shadow-primary/40 hover:scale-105 transition-all duration-300 flex items-center gap-4 overflow-hidden disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              {isLoading ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  <span>Loading...</span>
+                </>
+              ) : (
+                <>
+                  <span>Start Quiz Now</span>
+                  <span className="material-symbols-outlined transform group-hover:translate-x-1 transition-transform">
+                    play_arrow
+                  </span>
+                </>
+              )}
+            </button>
+          </div>
+        </main>
       </div>
     </ProtectedRoute>
   )

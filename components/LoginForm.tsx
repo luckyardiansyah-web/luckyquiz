@@ -41,7 +41,8 @@ export default function LoginForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-5 w-full">
       {error && (
-        <div className="bg-red-500/10 border border-red-500/50 rounded-xl p-4 text-red-400 text-sm">
+        <div className="bg-danger/10 border border-danger/50 rounded-xl p-4 text-danger-dark text-sm animate-slide-up">
+          <span className="material-symbols-outlined text-[18px] inline mr-2 align-middle">error</span>
           {error}
         </div>
       )}
@@ -50,10 +51,10 @@ export default function LoginForm() {
         <label className="text-text-primary text-sm font-semibold ml-1" htmlFor="username">
           Username or Email
         </label>
-        <div className="input-group flex w-full items-center rounded-xl bg-deep-navy/50 border border-charcoal-lighter transition-all duration-200">
+        <div className="input-group flex w-full items-center rounded-xl bg-white border-2 border-gray-200 hover:border-primary/50 transition-all duration-200">
           <input
             autoComplete="username"
-            className="flex-1 bg-transparent border-none text-white placeholder:text-text-secondary/60 h-12 px-4 rounded-l-xl focus:ring-0 text-sm md:text-base font-body"
+            className="flex-1 bg-transparent border-none text-text-primary placeholder:text-text-secondary h-12 px-4 rounded-l-xl focus:ring-0 text-sm md:text-base font-body"
             id="username"
             placeholder="name@example.com"
             type="text"
@@ -61,7 +62,7 @@ export default function LoginForm() {
             onChange={(e) => setUsername(e.target.value)}
             disabled={isLoading}
           />
-          <div className="px-4 text-text-secondary">
+          <div className="px-4 text-primary">
             <span className="material-symbols-outlined text-[20px]">person</span>
           </div>
         </div>
@@ -72,14 +73,14 @@ export default function LoginForm() {
           <label className="text-text-primary text-sm font-semibold" htmlFor="password">
             Password
           </label>
-          <a className="text-electric-blue text-xs font-medium hover:text-blue-400 transition-colors" href="#">
+          <a className="text-primary text-xs font-medium hover:text-primary-dark transition-colors" href="#">
             Forgot Password?
           </a>
         </div>
-        <div className="input-group flex w-full items-center rounded-xl bg-deep-navy/50 border border-charcoal-lighter transition-all duration-200">
+        <div className="input-group flex w-full items-center rounded-xl bg-white border-2 border-gray-200 hover:border-primary/50 transition-all duration-200">
           <input
             autoComplete="current-password"
-            className="flex-1 bg-transparent border-none text-white placeholder:text-text-secondary/60 h-12 px-4 rounded-l-xl focus:ring-0 text-sm md:text-base font-body"
+            className="flex-1 bg-transparent border-none text-text-primary placeholder:text-text-secondary h-12 px-4 rounded-l-xl focus:ring-0 text-sm md:text-base font-body"
             id="password"
             placeholder="••••••••"
             type="password"
@@ -87,18 +88,28 @@ export default function LoginForm() {
             onChange={(e) => setPassword(e.target.value)}
             disabled={isLoading}
           />
-          <div className="px-4 text-text-secondary">
+          <div className="px-4 text-primary">
             <span className="material-symbols-outlined text-[20px]">lock</span>
           </div>
         </div>
       </div>
 
       <button
-        className="mt-4 flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 bg-electric-blue hover:bg-electric-blue-hover text-white text-sm md:text-base font-bold tracking-wide transition-all shadow-lg hover:shadow-electric-blue/25 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+        className="mt-4 flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-xl h-12 gradient-primary hover:shadow-glow text-white text-sm md:text-base font-bold tracking-wide transition-all shadow-lg active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
         type="submit"
         disabled={isLoading}
       >
-        {isLoading ? 'Signing in...' : 'Start Quiz'}
+        {isLoading ? (
+          <>
+            <span className="material-symbols-outlined animate-spin mr-2">progress_activity</span>
+            Signing in...
+          </>
+        ) : (
+          <>
+            <span className="material-symbols-outlined mr-2">rocket_launch</span>
+            Start Quiz
+          </>
+        )}
       </button>
     </form>
   )

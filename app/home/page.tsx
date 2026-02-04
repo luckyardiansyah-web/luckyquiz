@@ -14,75 +14,73 @@ export default function Home() {
 
   return (
     <ProtectedRoute>
-      <div className="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark overflow-x-hidden font-display text-gray-900 dark:text-white">
+      <div className="relative min-h-screen w-full bg-[url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop')] bg-cover bg-fixed bg-center font-display text-slate-800">
+        <div className="absolute inset-0 bg-gradient-to-br from-white via-purple-50 to-indigo-50 z-0"></div>
+
         <Header />
 
         {hasResumableQuiz && resumableQuiz && <ResumeQuizModal quiz={resumableQuiz} />}
 
-        <main className="flex-1 flex flex-col items-center px-4 py-12">
-          <div className="max-w-6xl w-full">
-            <div className="text-center mb-12">
-              <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-4">
-                Welcome to LuckyQuiz
-              </h1>
-              <p className="text-lg text-gray-600 dark:text-gray-400">
-                Challenge yourself with quizzes across multiple categories
-              </p>
-            </div>
+        <main className="relative z-10 max-w-7xl mx-auto px-6 py-12 flex flex-col items-center justify-center min-h-[80vh]">
+          <div className="text-center mb-16 max-w-3xl animate-slide-up">
+            <h1 className="text-5xl md:text-6xl font-black text-slate-900 mb-4 tracking-tight flex items-center justify-center gap-4 flex-wrap">
+              <span className="hero-text-gradient">Welcome to LuckyQuiz!</span>
+              <span className="material-symbols-outlined text-5xl md:text-6xl text-primary transform -rotate-12">
+                celebration
+              </span>
+            </h1>
+            <p className="text-slate-500 text-xl font-medium">
+              Challenge yourself with fun quizzes across multiple categories!
+            </p>
+          </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Start New Quiz Card */}
-              <button
-                onClick={() => router.push('/config')}
-                className="group flex flex-col items-center gap-6 p-8 rounded-2xl border-2 border-primary bg-primary/5 hover:bg-primary/10 transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-1"
-              >
-                <div className="size-16 bg-gradient-to-br from-primary to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <span className="material-symbols-outlined text-white text-[40px]">play_arrow</span>
-                </div>
-                <div className="text-center">
-                  <h3 className="text-xl font-bold mb-2">Start New Quiz</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Begin a new quiz challenge
-                  </p>
-                </div>
-              </button>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
+            {/* Start New Quiz Card */}
+            <button
+              onClick={() => router.push('/config')}
+              className="group relative bg-white p-8 md:p-10 rounded-[2.5rem] border border-purple-100 custom-shadow hover:shadow-2xl hover:shadow-primary/20 hover:-translate-y-2 transition-all duration-300 flex flex-col items-center text-center animate-slide-up"
+            >
+              <div className="w-24 h-24 mb-6 bg-purple-700 rounded-3xl icon-container-gradient flex items-center justify-center text-white shadow-xl shadow-primary/30 group-hover:scale-110 transition-transform duration-300">
+                <span className="material-symbols-outlined text-5xl">rocket_launch</span>
+              </div>
+              <h2 className="text-2xl font-bold text-slate-800 mb-2 group-hover:text-primary transition-colors">
+                Start New Quiz
+              </h2>
+              <p className="text-slate-500 text-sm font-medium">Begin a new quiz adventure now!</p>
+              <div className="absolute inset-0 rounded-[2.5rem] border-2 border-transparent group-hover:border-primary/10 pointer-events-none transition-colors duration-300"></div>
+            </button>
 
-              {/* View History Card */}
-              <button
-                onClick={() => router.push('/history')}
-                className="group flex flex-col items-center gap-6 p-8 rounded-2xl border border-gray-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark hover:border-primary/50 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all duration-200 hover:-translate-y-1"
-              >
-                <div className="size-16 bg-gray-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                  <span className="material-symbols-outlined text-gray-600 dark:text-gray-300 group-hover:text-primary text-[40px]">
-                    history
-                  </span>
-                </div>
-                <div className="text-center">
-                  <h3 className="text-xl font-bold mb-2">View History</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    See your past quiz results
-                  </p>
-                </div>
-              </button>
+            {/* View History Card */}
+            <button
+              onClick={() => router.push('/history')}
+              className="group relative bg-white p-8 md:p-10 rounded-[2.5rem] border border-purple-100 custom-shadow hover:shadow-2xl hover:shadow-primary/20 hover:-translate-y-2 transition-all duration-300 flex flex-col items-center text-center animate-slide-up"
+              style={{ animationDelay: '0.1s' }}
+            >
+              <div className="w-24 h-24 mb-6 bg-purple-700 rounded-3xl icon-container-gradient flex items-center justify-center text-white shadow-xl shadow-primary/30 group-hover:scale-110 transition-transform duration-300">
+                <span className="material-symbols-outlined text-5xl">auto_stories</span>
+              </div>
+              <h2 className="text-2xl font-bold text-slate-800 mb-2 group-hover:text-primary transition-colors">
+                View History
+              </h2>
+              <p className="text-slate-500 text-sm font-medium">Check your previous quiz results</p>
+              <div className="absolute inset-0 rounded-[2.5rem] border-2 border-transparent group-hover:border-primary/10 pointer-events-none transition-colors duration-300"></div>
+            </button>
 
-              {/* Leaderboard Card */}
-              <button
-                onClick={() => router.push('/leaderboard')}
-                className="group flex flex-col items-center gap-6 p-8 rounded-2xl border border-gray-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark hover:border-primary/50 hover:bg-primary/5 dark:hover:bg-primary/10 transition-all duration-200 hover:-translate-y-1"
-              >
-                <div className="size-16 bg-gray-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                  <span className="material-symbols-outlined text-gray-600 dark:text-gray-300 group-hover:text-primary text-[40px]">
-                    emoji_events
-                  </span>
-                </div>
-                <div className="text-center">
-                  <h3 className="text-xl font-bold mb-2">Leaderboard</h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Top quiz performers
-                  </p>
-                </div>
-              </button>
-            </div>
+            {/* Leaderboard Card */}
+            <button
+              onClick={() => router.push('/leaderboard')}
+              className="group relative bg-white p-8 md:p-10 rounded-[2.5rem] border border-purple-100 custom-shadow hover:shadow-2xl hover:shadow-primary/20 hover:-translate-y-2 transition-all duration-300 flex flex-col items-center text-center animate-slide-up"
+              style={{ animationDelay: '0.2s' }}
+            >
+              <div className="w-24 h-24 mb-6 bg-purple-700 rounded-3xl icon-container-gradient flex items-center justify-center text-white shadow-xl shadow-primary/30 group-hover:scale-110 transition-transform duration-300">
+                <span className="material-symbols-outlined text-5xl">trophy</span>
+              </div>
+              <h2 className="text-2xl font-bold text-slate-800 mb-2 group-hover:text-primary transition-colors">
+                Leaderboard
+              </h2>
+              <p className="text-slate-500 text-sm font-medium">View top performers</p>
+              <div className="absolute inset-0 rounded-[2.5rem] border-2 border-transparent group-hover:border-primary/10 pointer-events-none transition-colors duration-300"></div>
+            </button>
           </div>
         </main>
       </div>

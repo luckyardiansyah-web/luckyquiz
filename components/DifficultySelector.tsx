@@ -13,16 +13,17 @@ export default function DifficultySelector({ selectedDifficulty, onSelect }: Dif
 
   return (
     <div className="flex-1">
-      <h3 className="text-gray-900 dark:text-white text-lg font-bold leading-tight tracking-[-0.015em] pb-4">
-        2. Difficulty Level
-      </h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      <div className="flex items-center gap-3 mb-6">
+        <span className="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">2</span>
+        <h2 className="text-xl font-bold text-slate-800">Difficulty Level</h2>
+      </div>
+      <div className="space-y-4">
         {difficulties.map((difficulty) => {
           const isSelected = selectedDifficulty === difficulty
           const config = DIFFICULTY_LABELS[difficulty]
 
           return (
-            <label key={difficulty} className="cursor-pointer relative">
+            <label key={difficulty} className="block cursor-pointer relative">
               <input
                 className="peer sr-only"
                 name="difficulty"
@@ -31,15 +32,20 @@ export default function DifficultySelector({ selectedDifficulty, onSelect }: Dif
                 checked={isSelected}
                 onChange={() => onSelect(difficulty)}
               />
-              <div className="flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-slate-800 bg-surface-light dark:bg-surface-dark p-4 items-center text-center transition-all peer-checked:border-primary peer-checked:bg-primary/10 peer-checked:shadow-lg dark:peer-checked:shadow-[0_0_20px_0_rgba(19,127,236,0.6)] peer-hover:border-primary/50">
-                <div className={`flex gap-0.5 ${config.color}`}>
+              <div
+                className={`w-full flex items-center justify-between p-4 rounded-2xl border transition-all ${isSelected
+                  ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20'
+                  : 'bg-white border-slate-100 hover:border-primary/50 text-slate-700'
+                  }`}
+              >
+                <span className={`font-semibold ${isSelected ? 'text-white' : ''} capitalize`}>{config.label}</span>
+                <div className={`flex gap-1 ${isSelected ? 'text-white' : config.color}`}>
                   {Array.from({ length: config.stars }).map((_, i) => (
-                    <span key={i} className="material-symbols-outlined font-bold">
+                    <span key={i} className="material-symbols-outlined text-lg">
                       star
                     </span>
                   ))}
                 </div>
-                <h4 className="text-gray-900 dark:text-white font-bold">{config.label}</h4>
               </div>
             </label>
           )
