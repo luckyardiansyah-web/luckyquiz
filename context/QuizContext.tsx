@@ -67,7 +67,7 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
 
       setQuizState(newQuizState)
       storage.set(STORAGE_KEYS.QUIZ_STATE, newQuizState)
-      
+
       router.push('/quiz')
     } catch (err) {
       console.error('Error starting quiz:', err)
@@ -102,11 +102,16 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         isCompleted: true,
         lastUpdated: Date.now(),
       }
-      
+
       setQuizState(completedState)
-      
-      // Navigate to results
-      router.push('/results')
+
+      // Save completed state to localStorage before navigating
+      storage.set(STORAGE_KEYS.QUIZ_STATE, completedState)
+
+      // Use setTimeout to ensure state is saved before navigation
+      setTimeout(() => {
+        router.push('/results')
+      }, 100)
     } else {
       // Move to next question
       setQuizState({
@@ -142,9 +147,16 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         isCompleted: true,
         lastUpdated: Date.now(),
       }
-      
+
       setQuizState(completedState)
-      router.push('/results')
+
+      // Save completed state to localStorage before navigating
+      storage.set(STORAGE_KEYS.QUIZ_STATE, completedState)
+
+      // Use setTimeout to ensure state is saved before navigation
+      setTimeout(() => {
+        router.push('/results')
+      }, 100)
     } else {
       // Move to next question
       setQuizState({
@@ -168,6 +180,7 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
     const unansweredCount = totalQuestions - answeredCount
     const scorePercentage = Math.round((correctCount / totalQuestions) * 100)
     const timeTaken = QUIZ_DURATION - quizState.timeRemaining
+
 
     const results: QuizResults = {
       quizId: quizState.quizId,

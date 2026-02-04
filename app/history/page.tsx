@@ -56,8 +56,8 @@ export default function HistoryPage() {
               </div>
             ) : (
               <div className="space-y-4">
-                {history.map((quiz) => (
-                  <QuizHistoryCard key={quiz.quizId} quiz={quiz} />
+                {history.map((quiz, index) => (
+                  <QuizHistoryCard key={`${quiz.quizId}-${index}`} quiz={quiz} />
                 ))}
               </div>
             )}

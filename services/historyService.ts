@@ -5,6 +5,14 @@ import { STORAGE_KEYS } from '@/utils/constants'
 export const historyService = {
   saveQuizResult(quizResult: QuizHistory): void {
     const history = this.getHistory()
+
+    // Check if this quiz result already exists (prevent duplicates)
+    const exists = history.some(item => item.quizId === quizResult.quizId)
+    if (exists) {
+      console.warn('Quiz result already saved, skipping duplicate:', quizResult.quizId)
+      return
+    }
+
     history.push(quizResult)
     storage.set(STORAGE_KEYS.QUIZ_HISTORY, history)
   },
@@ -20,7 +28,7 @@ export const historyService = {
 
   calculateLeaderboard(): LeaderboardEntry[] {
     const history = this.getHistory()
-    
+
     // Group by userId
     const userStats = new Map<string, {
       username: string

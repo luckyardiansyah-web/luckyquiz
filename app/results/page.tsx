@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import Header from '@/components/Header'
@@ -12,16 +12,22 @@ export default function ResultsPage() {
   const router = useRouter()
   const { quizState, endQuiz } = useQuiz()
   const [results, setResults] = useState<QuizResults | null>(null)
+  const hasProcessedRef = useRef(false)
 
   useEffect(() => {
+    // Prevent double execution in React Strict Mode
+    if (hasProcessedRef.current) return
+
     if (quizState && quizState.isCompleted) {
+      hasProcessedRef.current = true
       const quizResults = endQuiz()
       setResults(quizResults)
-    } else if (!quizState) {
-      // No quiz state, redirect to home
+    } else if (!quizState && !results) {
+      // No quiz state and no results yet, redirect to home
       router.push('/home')
     }
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []) // Empty dependency array - only run once on mount
 
   if (!results) {
     return (
