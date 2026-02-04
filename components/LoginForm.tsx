@@ -56,7 +56,7 @@ export default function LoginForm() {
             autoComplete="username"
             className="flex-1 bg-transparent border-none text-text-primary placeholder:text-text-secondary h-12 px-4 rounded-l-xl focus:ring-0 text-sm md:text-base font-body"
             id="username"
-            placeholder="name@example.com"
+            placeholder="ex: cintaayuamelia@gmail.com"
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
