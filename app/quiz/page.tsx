@@ -11,7 +11,7 @@ import { useQuiz } from '@/context/QuizContext'
 
 export default function QuizPage() {
   const router = useRouter()
-  const { quizState, answerQuestion, skipQuestion, endQuiz } = useQuiz()
+  const { quizState, answerQuestion, skipQuestion, goToPreviousQuestion, endQuiz } = useQuiz()
 
   useEffect(() => {
     if (!quizState || !quizState.isActive) {
@@ -20,7 +20,6 @@ export default function QuizPage() {
   }, [quizState, router])
 
   const handleTimerExpire = () => {
-    // Timer expired - end quiz and go to results
     endQuiz()
     router.push('/results')
   }
@@ -37,7 +36,8 @@ export default function QuizPage() {
   }
 
   const currentQuestion = quizState.questions[quizState.currentIndex]
-  const isResumed = quizState.currentIndex > 0 && quizState.answers.length === quizState.currentIndex
+  const isResumed = quizState.currentIndex > 0 && quizState.answers.length === quizState.currentIndex  
+  const previousAnswer = quizState.answers.find(a => a.questionId === currentQuestion.id)?.selectedAnswer
 
   return (
     <ProtectedRoute>
@@ -74,6 +74,9 @@ export default function QuizPage() {
             questionNumber={quizState.currentIndex + 1}
             onAnswer={answerQuestion}
             onSkip={skipQuestion}
+            onBack={goToPreviousQuestion}
+            canGoBack={quizState.currentIndex > 0}
+            previousAnswer={previousAnswer}
           />
         </main>
       </div>

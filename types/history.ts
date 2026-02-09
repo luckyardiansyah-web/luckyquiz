@@ -1,3 +1,5 @@
+import type { Question, Answer } from './quiz'
+
 export interface QuizHistory {
   quizId: string
   userId: string
@@ -11,6 +13,8 @@ export interface QuizHistory {
   scorePercentage: number
   completedAt: number // timestamp
   timeTaken: number // in seconds
+  questions?: Question[]
+  answers?: Answer[]
 }
 
 export interface LeaderboardEntry {

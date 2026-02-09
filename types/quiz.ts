@@ -57,6 +57,8 @@ export interface QuizResults {
   timeTaken: number // in seconds
   category: string
   difficulty: Difficulty
+  questions?: Question[]
+  answers?: Answer[]
 }
 
 export interface OpenTDBResponse {

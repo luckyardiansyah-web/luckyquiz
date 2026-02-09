@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import type { QuizResults } from '@/types/quiz'
 
 interface ResultsSummaryProps {
@@ -7,6 +8,8 @@ interface ResultsSummaryProps {
 }
 
 export default function ResultsSummary({ results }: ResultsSummaryProps) {
+  const [showDetails, setShowDetails] = useState(false)
+
   const getResultBadge = () => {
     if (results.scorePercentage >= 80) return { text: 'Excellent!', emoji: '🎉' }
     if (results.scorePercentage >= 60) return { text: 'Great Job!', emoji: '👏' }
@@ -20,6 +23,12 @@ export default function ResultsSummary({ results }: ResultsSummaryProps) {
   }
 
   const circleProgress = (results.scorePercentage / 100) * 263.89 // Circle circumference
+
+  const decodeHtml = (html: string) => {
+    const txt = document.createElement('textarea')
+    txt.innerHTML = html
+    return txt.value
+  }
 
   return (
     <div className="bg-white rounded-3xl overflow-hidden relative shadow-card-hover border-2 border-gray-100 animate-slide-up">
@@ -116,7 +125,113 @@ export default function ResultsSummary({ results }: ResultsSummaryProps) {
             </span>
           </div>
         </div>
+
+        {/* Toggle Details Button */}
+        {results.questions && results.answers && (
+          <button
+            onClick={() => setShowDetails(!showDetails)}
+            className="mt-8 flex items-center gap-2 px-6 py-3 rounded-full font-bold text-primary bg-primary/10 hover:bg-primary/20 transition-all transform hover:scale-105 active:scale-95 ripple-effect"
+          >
+            <span className="material-symbols-outlined text-[20px]">
+              {showDetails ? 'expand_less' : 'expand_more'}
+            </span>
+            {showDetails ? 'Hide Details' : 'Show Question Details'}
+          </button>
+        )}
       </div>
+
+      {/* Question Details Section */}
+      {showDetails && results.questions && results.answers && (
+        <div className="px-8 pb-8 animate-slide-up">
+          <div className="border-t-2 border-gray-200 pt-6">
+            <h2 className="text-2xl font-bold text-text-primary mb-4">Question Review</h2>
+            <div className="space-y-4">
+              {results.questions.map((question, index) => {
+                const answer = results.answers?.find(a => a.questionId === question.id)
+                const isCorrect = answer?.isCorrect
+                const isSkipped = answer?.selectedAnswer === null
+
+                return (
+                  <div
+                    key={question.id}
+                    className={`p-5 rounded-xl border-2 transition-all ${
+                      isSkipped
+                        ? 'bg-gray-50 border-gray-300'
+                        : isCorrect
+                        ? 'bg-primary/5 border-primary/30'
+                        : 'bg-danger/5 border-danger/30'
+                    }`}
+                  >
+                    {/* Question Header */}
+                    <div className="flex items-start gap-3 mb-3">
+                      <div className="flex-shrink-0 flex items-center justify-center size-8 rounded-lg bg-white font-bold text-sm text-primary border-2 border-primary/20">
+                        {index + 1}
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-medium text-text-primary leading-relaxed">
+                          {decodeHtml(question.question)}
+                        </p>
+                      </div>
+                      <div className="flex-shrink-0">
+                        {isSkipped ? (
+                          <span className="text-3xl">⏭️</span>
+                        ) : isCorrect ? (
+                          <span className="text-3xl">✅</span>
+                        ) : (
+                          <span className="text-3xl">❌</span>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Answers */}
+                    <div className="ml-11 space-y-2">
+                      {/* User's Answer */}
+                      {!isSkipped && (
+                        <div className="flex items-start gap-2">
+                          <span className="font-semibold text-sm text-text-secondary min-w-[100px]">
+                            Your answer:
+                          </span>
+                          <span
+                            className={`font-medium text-sm ${
+                              isCorrect ? 'text-primary' : 'text-danger'
+                            }`}
+                          >
+                            {decodeHtml(answer?.selectedAnswer || '')}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Skipped Message */}
+                      {isSkipped && (
+                        <div className="flex items-start gap-2">
+                          <span className="font-semibold text-sm text-text-secondary min-w-[100px]">
+                            Status:
+                          </span>
+                          <span className="font-medium text-sm text-gray-500">
+                            Question was skipped
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Correct Answer */}
+                      {!isCorrect && (
+                        <div className="flex items-start gap-2">
+                          <span className="font-semibold text-sm text-text-secondary min-w-[100px]">
+                            Correct answer:
+                          </span>
+                          <span className="font-medium text-sm text-primary">
+                            {decodeHtml(question.correctAnswer)}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

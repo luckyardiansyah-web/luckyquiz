@@ -4,9 +4,10 @@ import type { QuizHistory } from '@/types/history'
 
 interface QuizHistoryCardProps {
   quiz: QuizHistory
+  onClick?: () => void
 }
 
-export default function QuizHistoryCard({ quiz }: QuizHistoryCardProps) {
+export default function QuizHistoryCard({ quiz, onClick }: QuizHistoryCardProps) {
   const formatDate = (timestamp: number): string => {
     const date = new Date(timestamp)
     return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
@@ -18,8 +19,15 @@ export default function QuizHistoryCard({ quiz }: QuizHistoryCardProps) {
     return `${mins}m ${secs}s`
   }
 
+  const hasDetails = quiz.questions && quiz.answers
+
   return (
-    <div className="flex flex-col md:flex-row items-center gap-6 p-6 rounded-2xl border border-gray-200 bg-white hover:border-primary/50 hover:shadow-lg transition-all duration-200">
+    <div 
+      className={`flex flex-col md:flex-row items-center gap-6 p-6 rounded-2xl border border-gray-200 bg-white hover:border-primary/50 hover:shadow-lg transition-all duration-200 ${
+        hasDetails ? 'cursor-pointer' : ''
+      }`}
+      onClick={hasDetails ? onClick : undefined}
+    >
       {/* Category Icon */}
       <div className="size-16 bg-primary/10 rounded-2xl flex items-center justify-center flex-shrink-0">
         <span className="material-symbols-outlined text-primary text-[36px]">{quiz.categoryIcon}</span>
@@ -77,6 +85,12 @@ export default function QuizHistoryCard({ quiz }: QuizHistoryCardProps) {
             <span className="text-gray-900 font-semibold">{quiz.incorrectCount}</span>
           </div>
         </div>
+
+        {hasDetails && (
+          <button className="ml-4 flex items-center justify-center size-10 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-all">
+            <span className="material-symbols-outlined text-[20px]">arrow_forward</span>
+          </button>
+        )}
       </div>
     </div>
   )

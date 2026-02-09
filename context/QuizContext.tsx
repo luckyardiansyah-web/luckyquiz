@@ -16,6 +16,7 @@ interface QuizContextType {
   startQuiz: (config: QuizConfig) => Promise<void>
   answerQuestion: (answer: string) => void
   skipQuestion: () => void
+  goToPreviousQuestion: () => void
   endQuiz: () => QuizResults
   clearQuiz: () => void
   saveQuizState: () => void
@@ -32,7 +33,6 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Save quiz state to localStorage whenever it changes
   useEffect(() => {
     if (quizState && quizState.isActive) {
       storage.set(STORAGE_KEYS.QUIZ_STATE, quizState)
@@ -87,14 +87,22 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
       questionId: currentQuestion.id,
       selectedAnswer,
       isCorrect,
-      timeSpent: 0, // Could track time per question if needed
+      timeSpent: 0,
     }
 
-    const updatedAnswers = [...quizState.answers, newAnswer]
+    let updatedAnswers: Answer[]
+    const existingAnswerIndex = quizState.answers.findIndex(a => a.questionId === currentQuestion.id)
+    
+    if (existingAnswerIndex !== -1) {
+      updatedAnswers = [...quizState.answers]
+      updatedAnswers[existingAnswerIndex] = newAnswer
+    } else {
+      updatedAnswers = [...quizState.answers, newAnswer]
+    }
+
     const nextIndex = quizState.currentIndex + 1
 
     if (nextIndex >= quizState.questions.length) {
-      // Quiz completed
       const completedState: QuizState = {
         ...quizState,
         answers: updatedAnswers,
@@ -105,15 +113,12 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
 
       setQuizState(completedState)
 
-      // Save completed state to localStorage before navigating
       storage.set(STORAGE_KEYS.QUIZ_STATE, completedState)
 
-      // Use setTimeout to ensure state is saved before navigation
       setTimeout(() => {
         router.push('/results')
       }, 100)
     } else {
-      // Move to next question
       setQuizState({
         ...quizState,
         currentIndex: nextIndex,
@@ -135,11 +140,19 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
       timeSpent: 0,
     }
 
-    const updatedAnswers = [...quizState.answers, skippedAnswer]
+    let updatedAnswers: Answer[]
+    const existingAnswerIndex = quizState.answers.findIndex(a => a.questionId === currentQuestion.id)
+    
+    if (existingAnswerIndex !== -1) {
+      updatedAnswers = [...quizState.answers]
+      updatedAnswers[existingAnswerIndex] = skippedAnswer
+    } else {
+      updatedAnswers = [...quizState.answers, skippedAnswer]
+    }
+
     const nextIndex = quizState.currentIndex + 1
 
     if (nextIndex >= quizState.questions.length) {
-      // Quiz completed
       const completedState: QuizState = {
         ...quizState,
         answers: updatedAnswers,
@@ -150,15 +163,12 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
 
       setQuizState(completedState)
 
-      // Save completed state to localStorage before navigating
       storage.set(STORAGE_KEYS.QUIZ_STATE, completedState)
 
-      // Use setTimeout to ensure state is saved before navigation
       setTimeout(() => {
         router.push('/results')
       }, 100)
     } else {
-      // Move to next question
       setQuizState({
         ...quizState,
         currentIndex: nextIndex,
@@ -167,6 +177,18 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
       })
     }
   }, [quizState, router])
+
+  const goToPreviousQuestion = useCallback(() => {
+    if (!quizState || !quizState.isActive || quizState.currentIndex === 0) return
+
+    const previousIndex = quizState.currentIndex - 1
+
+    setQuizState({
+      ...quizState,
+      currentIndex: previousIndex,
+      lastUpdated: Date.now(),
+    })
+  }, [quizState])
 
   const endQuiz = useCallback((): QuizResults => {
     if (!quizState) {
@@ -193,6 +215,8 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
       timeTaken,
       category: quizState.config.category.name,
       difficulty: quizState.config.difficulty,
+      questions: quizState.questions,
+      answers: quizState.answers,
     }
 
     // Save to history
@@ -209,9 +233,10 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
       scorePercentage,
       completedAt: Date.now(),
       timeTaken,
+      questions: quizState.questions,
+      answers: quizState.answers,
     })
 
-    // Clear quiz state
     setQuizState(null)
     storage.remove(STORAGE_KEYS.QUIZ_STATE)
 
@@ -250,6 +275,7 @@ export function QuizProvider({ children }: { children: React.ReactNode }) {
         startQuiz,
         answerQuestion,
         skipQuestion,
+        goToPreviousQuestion,
         endQuiz,
         clearQuiz,
         saveQuizState,

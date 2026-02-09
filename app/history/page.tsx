@@ -4,23 +4,45 @@ import { useEffect, useState } from 'react'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import Header from '@/components/Header'
 import QuizHistoryCard from '@/components/QuizHistoryCard'
+import QuizResultModal from '@/components/QuizResultModal'
 import { historyService } from '@/services/historyService'
 import { useAuth } from '@/hooks/useAuth'
 import type { QuizHistory } from '@/types/history'
+import type { QuizResults } from '@/types/quiz'
 import { useRouter } from 'next/navigation'
 
 export default function HistoryPage() {
   const router = useRouter()
   const { user } = useAuth()
   const [history, setHistory] = useState<QuizHistory[]>([])
+  const [selectedQuiz, setSelectedQuiz] = useState<QuizResults | null>(null)
 
   useEffect(() => {
     if (user) {
       const userHistory = historyService.getUserHistory(user.id)
-      // Sort by most recent first
       setHistory(userHistory.sort((a, b) => b.completedAt - a.completedAt))
     }
   }, [user])
+
+  const handleQuizClick = (quiz: QuizHistory) => {
+    if (quiz.questions && quiz.answers) {
+      const results: QuizResults = {
+        quizId: quiz.quizId,
+        totalQuestions: quiz.totalQuestions,
+        answeredCount: quiz.totalQuestions - quiz.unansweredCount,
+        correctCount: quiz.correctCount,
+        incorrectCount: quiz.incorrectCount,
+        unansweredCount: quiz.unansweredCount,
+        scorePercentage: quiz.scorePercentage,
+        timeTaken: quiz.timeTaken,
+        category: quiz.category,
+        difficulty: quiz.difficulty as 'easy' | 'medium' | 'hard',
+        questions: quiz.questions,
+        answers: quiz.answers,
+      }
+      setSelectedQuiz(results)
+    }
+  }
 
   return (
     <ProtectedRoute>
@@ -67,13 +89,23 @@ export default function HistoryPage() {
                     className="animate-slide-up"
                     style={{ animationDelay: `${index * 0.05}s` }}
                   >
-                    <QuizHistoryCard quiz={quiz} />
+                    <QuizHistoryCard 
+                      quiz={quiz}
+                      onClick={() => handleQuizClick(quiz)}
+                    />
                   </div>
                 ))}
               </div>
             )}
           </div>
         </main>
+
+        {/* Quiz Result Modal */}
+        <QuizResultModal
+          isOpen={selectedQuiz !== null}
+          onClose={() => setSelectedQuiz(null)}
+          results={selectedQuiz!}
+        />
       </div>
     </ProtectedRoute>
   )
