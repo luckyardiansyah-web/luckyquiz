@@ -22,7 +22,7 @@ export default function Header() {
     <header className="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 px-6 md:px-10 py-3 bg-white sticky top-0 z-50">
       <div className="flex items-center gap-4">
         <div className="size-8 text-primary flex items-center justify-center">
-          <span className="material-symbols-outlined" style={{ fontSize: '32px' }}>
+          <span className="material-symbols-outlined text-[32px]">
             bolt
           </span>
         </div>
@@ -63,7 +63,10 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-4">
-          <button className="flex items-center justify-center rounded-full size-10 hover:bg-gray-100 transition-colors text-gray-900">
+          <button 
+            className="flex items-center justify-center rounded-full size-10 hover:bg-gray-100 transition-colors text-gray-900"
+            aria-label="Notifications"
+          >
             <span className="material-symbols-outlined">notifications</span>
           </button>
 
@@ -72,9 +75,9 @@ export default function Header() {
               onClick={() => setShowDropdown(!showDropdown)}
               className="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-gray-200"
               style={{
-                backgroundImage:
-                  'url("https://ui-avatars.com/api/?name=' + (user?.username || 'User') + '&background=137fec&color=fff")',
+                backgroundImage: `url("https://ui-avatars.com/api/?name=${user?.username || 'User'}&background=137fec&color=fff")`,
               }}
+              aria-label="User menu"
             />
 
             {showDropdown && (
